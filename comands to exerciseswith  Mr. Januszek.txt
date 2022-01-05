@@ -1,0 +1,173 @@
+* Encoding: UTF-8.
+*klucz do STAI - lęk stan
+
+*compute stai_s = (5 - p1) + (5 - p2) + (5 - p5)+ (5 - p8)+ (5 - p10)+ (5 - p11)+ (5 - p15)+ (5 - p16)+ (5 - p19)+ (5 - p20) + 
+*p3 + p4 + p6 + p7 + p9 + p12 +p13 +p14 + p17 +p18.
+*EXECUTE    .
+
+*VARIABLE LABELS    stai_s 'Lęk-stan (klucz oryginalny)' .
+
+
+compute stai_sn =  (5 - p11) + (5 - p4) + (5 - p13)+ (5 - p20)+ (5 - p17)+ (5 - p1)+ (5 - p3)+ (5 - p9)+ (5 - p7)+ (5 - p10)+
+p6 + p14 + p12 + p5 + p2 + p8 +p19 +p18 + p16 +p15.
+
+EXECUTE    .
+
+VARIABLE LABELS stai_sn  'Lęk-stan (klucz nowy)'.
+
+
+
+
+
+
+
+* 2. tworzenie klucza oryginalnego
+
+compute stai_s = (5 - p1) + (5 - p2) + (5 - p5)+ (5 - p8)+ (5 - p10)+ (5 - p11)+ (5 - p15)+ (5 - p16)+ (5 - p19)+ (5 - p20) + 
+p3 + p4 + p6 + p7 + p9 + p12 +p13 +p14 + p17 +p18.
+
+VARIABLE LABELS    stai_s 'Lęk-stan (klucz oryginalny)' .
+EXECUTE    .
+
+
+* 3. tworzenie klucza nowego (indywidualnego)
+
+compute stai_sn =  (5 - p11) + (5 - p4) + (5 - p13)+ (5 - p20)+ (5 - p17)+ (5 - p1)+ (5 - p3)+ (5 - p9)+ (5 - p7)+ (5 - p10)+
+p6 + p14 + p12 + p5 + p2 + p8 +p19 +p18 + p16 +p15.
+
+VARIABLE LABELS stai_sn  'Lęk-stan (klucz nowy)'.
+EXECUTE    .
+
+
+
+* 5. Pierwsze podejście do wykonia zadania
+ 
+COMPUTE sam_3k = sam .
+                     IF sam = 1 sam_3k = 1 . 
+                     IF sam = 2 sam_3k = 1 .
+                     IF sam = 3 sam_3k = 2 .
+                     IF sam = 4 sam_3k = 3 .
+                     IF sam = 5 sam_3k = 3 .
+FORMATS sam_3k(F8.0) .  
+VALUE LABELS sam_3k
+                              1 b. dobre lub dobre samopoczucie
+                              2 takie sobie samopoczucie
+                              3 złe oraz b. złe samopoczucie.
+EXECUTE .   
+
+
+
+*Drugie podejście do wykonia zadania
+
+RECODE sam (1 = 1) 
+                          (2 = 1) 
+                          (3 = 2) 
+                          (4 = 3) 
+                          (5 = 3) INTO sam_3k.
+
+FORMATS sam_3k(F8.0) .  
+
+VALUE LABELS  sam_3k
+                                1  b. dobre lub dobre samopoczucie
+                                2  takie sobie samopoczucie
+                                3  złe oraz b. złe samopoczucie .                                                           
+EXECUTE .
+
+
+
+
+list sam sam_3k .
+
+
+
+FREQUENCIES VARIABLES = stai_s stai_sn
+                                                       /FORMAT = NOTABLE    
+                                                       /STATISTICS = STDDEV MEAN MEDIAN    
+                                                       /ORDER = ANALYSIS .                     
+
+
+
+
+GET DATA
+          /TYPE=XLS
+          /FILE='D:\Zadanie3\Dane - STAI Kiecoń Beata.xls'
+          /SHEET=name 'Dane'
+          /CELLRANGE=FULL
+          /READNAMES=ON
+          /DATATYPEMIN PERCENTAGE=95.0.
+DATASET NAME ZbiórDanych1 WINDOW=FRONT.
+EXECUTE.
+
+
+VARIABLE LABELS lp liczba porządkowa .
+VARIABLE LABELS nr_ser numer seryjny ankiety .
+VARIABLE LABELS kod_ank kod ankietera .
+VARIABLE LABELS data_bad  data badania (dd-mm-rr) .
+VARIABLE LABELS wiek  wiek w latach.
+VARIABLE LABELS plec płeć .
+VARIABLE LABELS wykszt wykształecenie .
+VARIABLE LABELS akt_zaw1 aktywność zawodowa - pracuje zawodowo    .
+VARIABLE LABELS akt_zaw2 aktywność zawodowa - nie pracuję zawodowo    .
+VARIABLE LABELS akt_zaw3 aktywność zawodowa - uczę się, studiuję    .
+VARIABLE LABELS akt_zaw4 aktywność zawodowa - przebywam na urlopie wychowawczym    .
+VARIABLE LABELS akt_zaw5 aktywność zawodowa - jestem osobą bezrobotną    .
+VARIABLE LABELS akt_zaw6 aktywność zawodowa - jestem rencistą, emerytem    .
+VARIABLE LABELS ocen_sam  ocena samopoczucia .
+VARIABLE LABELS p1 kwestionariusz STAI - pozycja 1 .
+VARIABLE LABELS p2 kwestionariusz STAI - pozycja 2 .
+VARIABLE LABELS p3 kwestionariusz STAI - pozycja 3 .
+VARIABLE LABELS p4 kwestionariusz STAI - pozycja 4 .
+VARIABLE LABELS p5 kwestionariusz STAI - pozycja 5 .
+VARIABLE LABELS p6 kwestionariusz STAI - pozycja 6 .
+VARIABLE LABELS p7 kwestionariusz STAI - pozycja 7 .
+VARIABLE LABELS p8 kwestionariusz STAI - pozycja 8 .
+VARIABLE LABELS p9 kwestionariusz STAI - pozycja 9 .
+VARIABLE LABELS p10 kwestionariusz STAI - pozycja 10 .
+VARIABLE LABELS p11 kwestionariusz STAI - pozycja 11 .
+VARIABLE LABELS p12 kwestionariusz STAI - pozycja 12 .
+VARIABLE LABELS p13 kwestionariusz STAI - pozycja 13 .
+VARIABLE LABELS p14 kwestionariusz STAI - pozycja 14 .
+VARIABLE LABELS p15 kwestionariusz STAI - pozycja 15 .
+VARIABLE LABELS p16 kwestionariusz STAI - pozycja 16 .
+VARIABLE LABELS p17 kwestionariusz STAI - pozycja 17 .
+VARIABLE LABELS p18 kwestionariusz STAI - pozycja 18 .
+VARIABLE LABELS p19 kwestionariusz STAI - pozycja 19 .
+VARIABLE LABELS p20 kwestionariusz STAI - pozycja 20 .
+EXECUTE .
+VALUE LABELS plec
+                              1 mężczyzna
+                              2 kobieta .
+EXECUTE .
+VALUE LABELS wykszt
+                              1 bez wykształcenia szkolnego
+                              2 podstawowe nieukończone
+                              3 podstawowe ukończone
+                              4 zasadnicze zawodowe
+                              5 średnie lub policealne
+                              6 wyższe .
+EXECUTE .
+VALUE LABELS akt_zaw1  akt_zaw2 akt_zaw3 akt_zaw4 akt_zaw5 akt_zaw6
+                              0 nie
+                              1 tak .
+EXECUTE .
+VALUE LABELS ocen_sam
+                              1 b. dobre
+                              2 dobre
+                              3 takie sobie
+                              4 złe
+                              5 b. złe .
+EXECUTE .
+VALUE LABELS p1 to p20
+                              1 Zdecydowanie nie
+                              2 Raczej nie
+                              3 Raczej tak
+                              4 Zdecydowanie tak .
+EXECUTE .
+
+
+VARIABLE ALIGNMENT lp nr_ser kod_ank data_bad wiek plec wykszt
+                                akt_zaw1  to akt_zaw6 ocen_sam p1 to p20 (CENTER) .
+EXECUTE .
+
+
+
